@@ -46,38 +46,37 @@
   </div>
 </template>
 <script>
-  export default {
-    data() {
-      return {
-        packages: []
-      };
+export default {
+  data() {
+    return {
+      packages: []
+    };
+  },
+  created: function() {
+    // Event
+    this.fetchPackages();
+  },
+  methods: {
+    fetchPackages() {
+      let uri = this.apiPath + "api/paquetes/";
+      this.axios.get(uri).then(response => {
+        this.packages = response.data;
+      });
     },
-    created: function () {
-      // Event
-      this.fetchPackages();
-    },
-    methods: {
-      fetchPackages() {
-        let uri = this.apiPath + "api/paquetes/";
-        this.axios.get(uri).then(response => {
-          console.log(response.data);
-          this.packages = response.data;
+    deletePackage(index, id) {
+      if (!confirm("Desea eliminar el paquete de " + this.packages[index].fromPersonName + "?")) return;
+      let uri = this.apiPath + "api/paquetes/" + id;
+      this.axios
+        .delete(uri)
+        .then(response => {
+          this.packages.splice(index, 1);
+        })
+        .catch(function(error) {
+          const message = error.response.data.message;
+          const status = error.response.status;
+          alert(status + ": " + message);
         });
-      },
-      deletePackage(index, id) {
-        if (!confirm("Desea eliminar este paquete (" + id + ")?")) return;
-        let uri = this.apiPath + "api/paquetes/" + id;
-        this.axios
-          .delete(uri)
-          .then(response => {
-            this.packages.splice(index, 1);
-          })
-          .catch(function (error) {
-            const message = error.response.data.message;
-            const status = error.response.status;
-            alert(status + ": " + message);
-          });
-      }
     }
-  };
+  }
+};
 </script>

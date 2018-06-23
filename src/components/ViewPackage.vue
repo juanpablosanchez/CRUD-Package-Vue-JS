@@ -4,9 +4,9 @@
       <v-btn icon class="mx-0" :to="{ name: 'ListPackages' }">
         <v-icon color="black">chevron_left</v-icon>
       </v-btn>
-      <v-toolbar-title>Paquete</v-toolbar-title>
+      <v-toolbar-title>Detalles del paquete</v-toolbar-title>
     </v-toolbar>
-    <v-subheader>Detalles del paquete</v-subheader>
+    <br>
     <v-container grid-list-md>
       <v-layout row wrap>
         <v-flex xs6 md3>
@@ -44,10 +44,12 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <v-subheader>Notificaciones
+    <br>
+    <v-subheader>
+      Notificaciones
       <v-btn small round color="teal white--text">
         Crear
-        <v-icon color="white">add</v-icon>
+        <v-icon small color="white">add</v-icon>
       </v-btn>
     </v-subheader>
     <v-data-table :headers="headers" :items="registries" hide-actions class="elevation-1">
@@ -77,7 +79,6 @@
       };
     },
     created: function () {
-      // Event
       this.getItem();
       this.getRegistries();
     },
