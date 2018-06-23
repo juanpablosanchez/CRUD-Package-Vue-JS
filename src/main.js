@@ -10,13 +10,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 Vue.use(VueAxios, axios);
 Vue.use(BootstrapVue);
+Vue.use(require('vue-moment'));
 Vue.config.productionTip = false;
 
 Vue.mixin({
   data: function() {
     return {
       get apiPath() {
-        return 'https://my-nodejs-docker-application-wpcavbfbhy.now.sh/';
+        return 'https://my-nodejs-docker-application-bhxwhkprbr.now.sh/';
       }
     }
   }

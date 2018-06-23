@@ -47,7 +47,7 @@
         </form>
         <div class="row">
             <div class="col-md-12 text-center">
-                <router-link :to="{ name: 'ListProducts' }" class="btn btn-success">Back</router-link>
+                <router-link :to="{ name: 'ListPackages' }" class="btn btn-success">Back</router-link>
             </div>
         </div>
     </div>

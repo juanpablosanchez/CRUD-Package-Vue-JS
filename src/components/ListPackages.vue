@@ -1,30 +1,25 @@
 <template>
     <div>
-        <h1>Products</h1>
-        <div class="row">
-            <div class="col-md-10"></div>
-            <div class="col-md-2">
-                <router-link :to="{ name: 'CreateProduct' }" class="btn btn-primary">Create Product
-                </router-link>
-            </div>
-        </div>
+        <h1 class="text-center">Packages</h1>
         <br />
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <td>Name</td>
-                    <td>Price</td>
-                    <td>Actions</td>
+                    <th>Sender</th>
+                    <th>To Address</th>
+                    <th>Weight</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(product, index) in products">
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.price }}</td>
+                <tr v-for="(packageItem, index) in packages">
+                    <td>{{ packageItem.fromPersonName }}</td>
+                    <td>{{ packageItem.toAddress }}</td>
+                    <td>{{ packageItem.weight }}</td>
                     <td>
-                        <router-link :to="{ name: 'ViewProduct', params: { id: product._id }}" class="btn btn-info">View</router-link>
-                        <router-link :to="{ name: 'EditProduct', params: { id: product._id }}" class="btn btn-warning">Edit</router-link>
-                        <button class="btn btn-danger" v-on:click="deleteProduct(index,product._id)">Delete</button>
+                        <router-link :to="{ name: 'ViewPackage', params: { id: packageItem._id }}" class="btn btn-info">View</router-link>
+                        <router-link :to="{ name: 'EditPackage', params: { id: packageItem._id }}" class="btn btn-warning">Edit</router-link>
+                        <button class="btn btn-danger" v-on:click="deletePackage(index,packageItem._id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -35,29 +30,28 @@
 export default {
   data() {
     return {
-      products: []
+      packages: []
     };
   },
   created: function() {
     // Event
-    this.fetchProducts();
+    this.fetchPackages();
   },
   methods: {
-    fetchProducts() {
-      let base = "https://www.server.com/";
-      let uri = base + "products/";
+    fetchPackages() {
+      let uri = this.apiPath + "api/paquetes/";
       this.axios.get(uri).then(response => {
-        this.products = response.data;
+          console.log(response.data);
+        this.packages = response.data;
       });
     },
-    deleteProduct(index, id) {
-      let base = "https://www.server.com/";
-      let uri = base + "products/" + id;
+    deletePackage(index, id) {
+      if (!confirm("Do you want delete this package (" + id + ")?")) return;
+      let uri = this.apiPath + "api/paquetes/" + id;
       this.axios
         .delete(uri)
         .then(response => {
-          console.log(response.data);
-          this.products.splice(index, 1);
+          this.packages.splice(index, 1);
         })
         .catch(function(error) {
           const message = error.response.data.message;
