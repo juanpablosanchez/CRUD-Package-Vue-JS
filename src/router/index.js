@@ -4,11 +4,14 @@ import CreatePackage from '@/components/CreatePackage'
 import ListPackages from '@/components/ListPackages'
 import EditPackage from '@/components/EditPackage'
 import ViewPackage from '@/components/ViewPackage'
+import CreateRegistry from '@/components/registry/CreateRegistry'
+import ViewRegistry from '@/components/registry/ViewRegistry'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    // Packages
     {
       path: '/package/create',
       name: 'CreatePackage',
@@ -28,6 +31,17 @@ export default new Router({
       path: '/package/view/:id',
       name: 'ViewPackage',
       component: ViewPackage
+    },
+    // Registries
+    {
+      path: '/package/:idpackage/registry/create',
+      name: 'CreateRegistry',
+      component: CreateRegistry
+    },
+    {
+      path: '/package/:idpackage/registry/view/:id',
+      name: 'ViewRegistry',
+      component: ViewRegistry
     },
     // Catch-all redirect
     {

@@ -10,37 +10,37 @@
     <v-container grid-list-md>
       <v-layout row wrap>
         <v-flex xs6 md3>
-          <img id="photo" width="70%" :src="itemPackage.imageUrl">
+          <img id="photo" width="70%" :src="item.imageUrl">
         </v-flex>
         <v-flex xs6 md3>
           <strong>Peso:</strong>
-          <br> {{ itemPackage.weight }}
+          <br> {{ item.weight }}
           <br>
           <br>
           <strong>Localización:</strong>
           <p>
             <v-icon small>play_arrow</v-icon>
-            Latitud: {{ itemPackage.currentLocation ? itemPackage.currentLocation[0] : '' }}
+            Latitud: {{ item.currentLocation ? item.currentLocation[0] : '' }}
             <br>
             <v-icon small>play_arrow</v-icon>
-            Longitud: {{ itemPackage.currentLocation ? itemPackage.currentLocation[1] : '' }}
+            Longitud: {{ item.currentLocation ? item.currentLocation[1] : '' }}
           </p>
         </v-flex>
         <v-flex xs6 md3>
           <strong>Remitente</strong>
-          <br> {{ itemPackage.fromPersonName }}
+          <br> {{ item.fromPersonName }}
           <br>
           <br>
           <strong>Teléfono</strong>
-          <br> {{ itemPackage.phone }}
+          <br> {{ item.phone }}
         </v-flex>
         <v-flex xs6 md3>
           <strong>Receptor</strong>
-          <br> {{ itemPackage.toPersonName }}
+          <br> {{ item.toPersonName }}
           <br>
           <br>
           <strong>Dirección a enviar</strong>
-          <br> {{ itemPackage.toAddress }}
+          <br> {{ item.toAddress }}
         </v-flex>
       </v-layout>
     </v-container>
@@ -55,7 +55,7 @@
         <td>{{ props.item.date | moment("ddd, DD MMM YYYY HH:mm") }}</td>
         <td class="text-xs-right">{{ props.item.state }}</td>
         <td class="justify-center layout px-0">
-          <v-btn icon class="mx-0" :to="{ name: 'ViewRegistry', params: { idpackage: itemPackage._id, id: props.item._id }}">
+          <v-btn icon class="mx-0" :to="{ name: 'ViewRegistry', params: { id: props.item._id }}">
             <v-icon color="teal">visibility</v-icon>
           </v-btn>
         </td>
@@ -67,7 +67,7 @@
   export default {
     data() {
       return {
-        itemPackage: {},
+        item: {},
         registries: [],
         headers: [
           { text: 'Fecha', value: 'date' },
@@ -87,7 +87,7 @@
         this.axios
           .get(uri)
           .then(response => {
-            this.itemPackage = response.data;
+            this.item = response.data;
 
             var arrayBufferView = new Uint8Array(
               response.data.packageImage.data.data
@@ -96,7 +96,7 @@
             var urlCreator = window.URL || window.webkitURL;
             var imageUrl = urlCreator.createObjectURL(blob);
 
-            this.itemPackage.imageUrl = imageUrl;
+            this.item.imageUrl = imageUrl;
           })
           .catch(function (error) {
             const message = error.response.data.message;
