@@ -60,7 +60,7 @@
     <v-data-table :headers="headers" :items="registries" hide-actions class="elevation-1">
       <template slot="items" slot-scope="props">
         <td>{{ props.item.date | moment("ddd, DD MMM YYYY HH:mm") }}</td>
-        <td class="text-xs-right">{{ props.item.state }}</td>
+        <td class="text-xs-right text-md-center">{{ props.item.state }}</td>
         <td class="justify-center layout px-0">
           <v-btn icon class="mx-0" v-if="itemPackage._id && props.item._id" :to="{ name: 'ViewRegistry', params: { id: props.item._id }}">
             <v-icon color="teal">visibility</v-icon>
@@ -80,8 +80,8 @@
         registries: [],
         headers: [
           { text: 'Fecha', value: 'date' },
-          { text: 'Estado', value: 'state' },
-          { text: 'Acción', sortable: false, value: 'action' }
+          { text: 'Estado', value: 'state', class: 'text-md-center' },
+          { text: 'Acción', sortable: false, value: 'action', class: 'text-md-center' }
         ]
       };
     },

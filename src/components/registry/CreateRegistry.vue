@@ -23,7 +23,7 @@
               label="Estado del paquete" multi-line required></v-text-field>
           </v-flex>
           <v-flex xs12>
-            <v-checkbox v-model="registry.isClosed" label="El paquete se entregó o se canceló?"></v-checkbox>
+            <v-checkbox v-model="registry.isCLosed" label="El paquete se entregó o se canceló?"></v-checkbox>
           </v-flex>
         </v-layout>
         <v-layout row wrap>
