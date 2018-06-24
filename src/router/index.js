@@ -36,7 +36,7 @@ export default new Router({
     },
     // Registries
     {
-      path: '/package/:idpackage/registry/create',
+      path: '/package/:id/registry/create',
       name: 'CreateRegistry',
       component: CreateRegistry
     },

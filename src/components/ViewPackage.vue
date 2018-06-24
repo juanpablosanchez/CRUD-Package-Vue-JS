@@ -52,7 +52,7 @@
     <br>
     <v-subheader>
       Notificaciones
-      <v-btn small round color="teal white--text" v-if="mayCreateRegistry && itemPackage._id" :to="{ name: 'ViewRegistry', params: { idpackage: itemPackage._id }}">
+      <v-btn small round color="teal white--text" v-if="mayCreateRegistry && itemPackage._id" :to="{ name: 'CreateRegistry', params: { id: itemPackage._id }}">
         Crear
         <v-icon small color="white">add</v-icon>
       </v-btn>

@@ -20,7 +20,7 @@ Vue.mixin({
   data: function () {
     return {
       get apiPath() {
-        return 'https://my-nodejs-docker-application-bhxwhkprbr.now.sh/';
+        return 'https://my-nodejs-docker-application-iadcenybss.now.sh/';
       }
     }
   }

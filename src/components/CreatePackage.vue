@@ -63,6 +63,8 @@
       addPackage() {
         let uri = this.apiPath + "api/paquetes/";
         this.loader = true;
+        let loader = document.querySelector('#loader');
+        if (loader) loader.style.display = 'block';
         let data = this.getFormData();
         this.axios
           .post(uri, data)
@@ -70,7 +72,8 @@
             this.$router.push({ name: "ListPackages" });
           })
           .catch(function (error) {
-            this.loader = false;
+            let loader = document.querySelector('#loader');
+            if (loader) loader.style.display = 'none';
             const message = error.response.data.message;
             const status = error.response.status;
             alert(status + ": " + message);

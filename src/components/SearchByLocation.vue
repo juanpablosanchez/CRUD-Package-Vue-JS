@@ -1,53 +1,76 @@
 <template>
   <div class="theme--light">
     <v-toolbar color="shades white" dark style="z-index: 100;">
-      <v-btn icon class="mx-0" :to="{ name: 'ListPackages' }">
-        <v-icon color="black">chevron_left</v-icon>
-      </v-btn>
-      <v-toolbar-title>Crear paquete</v-toolbar-title>
+      <v-toolbar-title>Buscar por localización</v-toolbar-title>
     </v-toolbar>
-    <br>
+
+    <v-subheader>Busca los diez paquetes más cercanos a la ubicación dada.</v-subheader>
     <v-container grid-list-md>
-      <form v-on:submit.prevent="addPackage">
-        <v-layout row wrap>
-          <v-flex xs12 sm6>
-            <v-text-field v-model="itemPackage.fromPersonName" :rules="[() => (itemPackage.fromPersonName && itemPackage.fromPersonName.length > 0) || 'Este campo es requerido']"
-              label="Remitente" required></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6>
-            <v-text-field v-model="itemPackage.phone" :rules="[() => (itemPackage.phone && itemPackage.phone.length > 0) || 'Este campo es requerido']"
-              label="Teléfono" required></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6>
-            <v-text-field v-model="itemPackage.toPersonName" :rules="[() => (itemPackage.toPersonName && itemPackage.toPersonName.length > 0) || 'Este campo es requerido']"
-              label="Receptor" required></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6>
-            <v-text-field v-model="itemPackage.toAddress" :rules="[() => (itemPackage.toAddress && itemPackage.toAddress.length > 0) || 'Este campo es requerido']"
-              label="Dirección a enviar" required></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6>
-            <v-text-field v-model="itemPackage.weight" :rules="[() => (itemPackage.weight && itemPackage.weight.length > 0) || 'Este campo es requerido']"
-              label="Peso" required></v-text-field>
-          </v-flex>
-          <v-flex xs12 sm6>
-            <input type="file" id="packageImage" required>
-          </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-          <v-flex xs12>
-            <div class="text-xs-center">
-              <v-btn type="submit" color="teal white--text">Crear</v-btn>
-            </div>
-          </v-flex>
-        </v-layout>
-      </form>
+      <v-layout row wrap>
+        <v-flex xs12>
+          <strong>Localización:</strong>
+        </v-flex>
+        <v-flex xs6>
+          <v-text-field v-model="location.latitude" :rules="[() => isFloat(location.latitude) || 'Este campo es requerido']" label="Latitud"
+            required></v-text-field>
+        </v-flex>
+        <v-flex xs6>
+          <v-text-field v-model="location.longitude" :rules="[() => isFloat(location.longitude) || 'Este campo es requerido']" label="Longitud"
+            required></v-text-field>
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap>
+        <v-flex xs12>
+          <div class="text-xs-center">
+            <v-btn color="teal white--text" @click="getPackagesCloseToLocation()">Crear</v-btn>
+          </div>
+        </v-flex>
+      </v-layout>
     </v-container>
+
+    <v-subheader v-if="this.packages.length > 0">Resultado</v-subheader>
+    <v-container grid-list-md>
+      <v-layout row wrap v-for="(item) in packages" :key="item._id">
+        <v-flex xs7 sm9>
+          <v-layout row wrap>
+            <v-flex xs12 sm4>
+              <strong>Remitente:</strong>
+              <br class="hidden-xs-only"> {{ item.fromPersonName }}
+            </v-flex>
+            <v-flex xs12 sm4>
+              <strong>Dirección a enviar:</strong>
+              <br class="hidden-xs-only"> {{ item.toAddress }}
+            </v-flex>
+            <v-flex v-if="item.currentLocation" xs12 sm4>
+              <strong>Ubicación:</strong>
+              <br> Latitud: {{ item.currentLocation[0] }}
+              <br> Longitud: {{ item.currentLocation[1] }}
+            </v-flex>
+          </v-layout>
+        </v-flex>
+        <v-flex xs5 sm3 text-xs-center>
+          <v-btn icon class="mx-0" :to="{ name: 'ViewPackage', params: { id: item._id }}">
+            <v-icon color="teal">visibility</v-icon>
+          </v-btn>
+          <v-btn icon class="mx-0" :to="{ name: 'EditPackage', params: { id: item._id }}">
+            <v-icon color="amber">edit</v-icon>
+          </v-btn>
+          <v-btn icon class="mx-0" @click="deletePackage(index,item._id)">
+            <v-icon color="pink">delete</v-icon>
+          </v-btn>
+        </v-flex>
+        <v-flex xs12 class="theme--light">
+          <v-divider></v-divider>
+        </v-flex>
+      </v-layout>
+    </v-container>
+
     <div v-if="loader" style="z-index: 10;position: fixed;height: 100%;width: 100%;top: 0;background-color: #ffffffba;">
       <div style="height: 50px;width: 50px;position: absolute;top: calc( 50% - 25px);left: calc( 50% - 25px);">
         <v-progress-circular :size="50" indeterminate color="primary"></v-progress-circular>
       </div>
     </div>
+    <bottom-navigation selected="2"></bottom-navigation>
   </div>
 </template>
 <script>
@@ -55,44 +78,35 @@
     data() {
       return {
         loader: false,
-        itemPackage: {}
+        location: {
+          latitude: '',
+          longitude: ''
+        },
+        packages: []
       };
     },
     methods: {
-      addPackage() {
-        let uri = this.apiPath + "api/paquetes/";
+      getPackagesCloseToLocation() {
+        let uri = this.apiPath + "api/paquetes?latitude=" + this.location.latitude + "&longitude=" + this.location.longitude;
         this.loader = true;
-        let data = this.getFormData();
+        let loader = document.querySelector('#loader');
+        if (loader) loader.style.display = 'block';
         this.axios
-          .post(uri, data)
+          .get(uri)
           .then(response => {
-            this.$router.push({ name: "ListPackages" });
+            this.loader = false;
+            this.packages = response.data;
           })
           .catch(function (error) {
-            this.loader = false;
+            let loader = document.querySelector('#loader');
+            if (loader) loader.style.display = 'none';
             const message = error.response.data.message;
             const status = error.response.status;
             alert(status + ": " + message);
           });
       },
-      getFormData() {
-        let formData = new FormData();
-
-        let images = document.querySelector("#packageImage");
-
-        // in the value '[Object object]' on the server.
-        formData.append("fromPersonName", this.itemPackage.fromPersonName);
-        formData.append("toPersonName", this.itemPackage.toPersonName);
-        formData.append("phone", this.itemPackage.phone);
-        formData.append("toAddress", this.itemPackage.toAddress);
-        formData.append("weight", this.itemPackage.weight);
-        formData.append("dimention", this.itemPackage.dimention);
-        if (images.files.length > 0) {
-          let packageImage = images.files[0];
-          formData.append("packageImage", packageImage.name);
-          formData.append("packageImage", packageImage);
-        }
-        return formData;
+      isFloat(value) {
+        return /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(value);
       }
     }
   };
