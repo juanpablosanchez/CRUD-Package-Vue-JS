@@ -1,48 +1,21 @@
 <template>
   <div class="theme--light">
     <v-toolbar color="shades white" dark>
-      <v-toolbar-title>Paquetes</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn small round color="teal" :to="{ name: 'CreatePackage' }">
-        Crear
-        <v-icon small>add</v-icon>
-      </v-btn>
+      <v-toolbar-title>Notificaciones</v-toolbar-title>
     </v-toolbar>
-    <v-subheader>Lista de paquetes</v-subheader>
-    <v-container grid-list-md>
-      <v-layout row wrap v-for="(item,index) in packages" :key="item._id">
-        <v-flex xs7 sm9>
-          <v-layout row wrap>
-            <v-flex xs12 sm4>
-              <strong>Remitente:</strong>
-              <br class="hidden-xs-only"> {{ item.fromPersonName }}
-            </v-flex>
-            <v-flex xs12 sm4>
-              <strong>Dirección a enviar:</strong>
-              <br class="hidden-xs-only"> {{ item.toAddress }}
-            </v-flex>
-            <v-flex xs12 sm4>
-              <strong>Peso:</strong>
-              <br class="hidden-xs-only"> {{ item.weight }}
-            </v-flex>
-          </v-layout>
-        </v-flex>
-        <v-flex xs5 sm3 text-xs-center>
-          <v-btn icon class="mx-0" :to="{ name: 'ViewPackage', params: { id: item._id }}">
+    <v-subheader>Lista de notificaciones</v-subheader>
+    <v-data-table :headers="headers" :items="registries" hide-actions class="elevation-1">
+      <template slot="items" slot-scope="props">
+        <td>{{ props.item.date | moment("ddd, DD MMM YYYY HH:mm") }}</td>
+        <td class="text-xs-right hidden-xs-only">{{ props.item.fromPersonName }}</td>
+        <td class="text-xs-right">{{ props.item.state }}</td>
+        <td class="justify-center layout px-0">
+          <v-btn icon class="mx-0" v-if="props.item._id" :to="{ name: 'ViewRegistry', params: { id: props.item._id }}">
             <v-icon color="teal">visibility</v-icon>
           </v-btn>
-          <v-btn icon class="mx-0" :to="{ name: 'EditPackage', params: { id: item._id }}">
-            <v-icon color="amber">edit</v-icon>
-          </v-btn>
-          <v-btn icon class="mx-0" @click="deletePackage(index,item._id)">
-            <v-icon color="pink">delete</v-icon>
-          </v-btn>
-        </v-flex>
-        <v-flex xs12 class="theme--light">
-          <v-divider></v-divider>
-        </v-flex>
-      </v-layout>
-    </v-container>
+        </td>
+      </template>
+    </v-data-table>
     <bottom-navigation selected="1"></bottom-navigation>
   </div>
 </template>
@@ -50,40 +23,54 @@
   export default {
     data() {
       return {
-        packages: []
+        registries: [],
+        packages: [],
+        headers: [
+          { text: 'Fecha', value: 'date' },
+          { text: 'Remitente', value: 'sender', class: 'hidden-xs-only' },
+          { text: 'Estado', value: 'state' },
+          { text: 'Acción', sortable: false, value: 'action' }
+        ]
       };
     },
     created: function () {
       // Event
+      this.fetchRegistries();
       this.fetchPackages();
     },
     methods: {
+      fetchRegistries() {
+        let uri = this.apiPath + "api/registros/";
+        this.axios.get(uri).then(response => {
+          response.data.forEach(element => {
+            element.fromPersonName = "";
+          });
+          this.registries = response.data;
+          if (this.packages.length > 0) matchResult();
+        });
+      },
       fetchPackages() {
         let uri = this.apiPath + "api/paquetes/";
         this.axios.get(uri).then(response => {
           this.packages = response.data;
+          if (this.registries.length > 0) this.matchResult();
         });
       },
-      deletePackage(index, id) {
-        if (
-          !confirm(
-            "Desea eliminar el paquete de " +
-            this.packages[index].fromPersonName +
-            "?"
-          )
-        )
-          return;
-        let uri = this.apiPath + "api/paquetes/" + id;
-        this.axios
-          .delete(uri)
-          .then(response => {
-            this.packages.splice(index, 1);
-          })
-          .catch(function (error) {
-            const message = error.response.data.message;
-            const status = error.response.status;
-            alert(status + ": " + message);
-          });
+      matchResult() {
+        this.registries.forEach(registry => {
+          let item = this.getPackage(registry._id);
+          registry.fromPersonName = item.fromPersonName;
+        });
+      },
+      getPackage(registryId) {
+        let result = null;
+        this.packages.forEach(item => {
+          if (item.notifications.filter(notification => notification._id === registryId).length > 0) {
+            result = item;
+            return;
+          }
+        });
+        return result;
       }
     }
   };

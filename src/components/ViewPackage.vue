@@ -52,7 +52,7 @@
     <br>
     <v-subheader>
       Notificaciones
-      <v-btn small round color="teal white--text" v-if="itemPackage._id" :to="{ name: 'ViewRegistry', params: { idpackage: itemPackage._id }}">
+      <v-btn small round color="teal white--text" v-if="mayCreateRegistry && itemPackage._id" :to="{ name: 'ViewRegistry', params: { idpackage: itemPackage._id }}">
         Crear
         <v-icon small color="white">add</v-icon>
       </v-btn>
@@ -62,7 +62,7 @@
         <td>{{ props.item.date | moment("ddd, DD MMM YYYY HH:mm") }}</td>
         <td class="text-xs-right">{{ props.item.state }}</td>
         <td class="justify-center layout px-0">
-          <v-btn icon class="mx-0" v-if="itemPackage._id && props.item._id" :to="{ name: 'ViewRegistry', params: { idpackage: itemPackage._id, id: props.item._id }}">
+          <v-btn icon class="mx-0" v-if="itemPackage._id && props.item._id" :to="{ name: 'ViewRegistry', params: { id: props.item._id }}">
             <v-icon color="teal">visibility</v-icon>
           </v-btn>
         </td>
@@ -75,6 +75,7 @@
   export default {
     data() {
       return {
+        mayCreateRegistry: false,
         itemPackage: {},
         registries: [],
         headers: [
@@ -118,12 +119,24 @@
           .get(uri)
           .then(response => {
             this.registries = response.data;
+            this.setMayCreateRegistry();
           })
           .catch(function (error) {
-            const message = error.response.data.message;
+            constsetMayCreateRegistryponse.data.message;
             const status = error.response.status;
             alert(status + ": " + message);
           });
+      },
+      setMayCreateRegistry() {
+        let isClosed = false;
+        this.registries.forEach(registry => {
+          if (registry.isClosed) {
+            isClosed = true;
+            return;
+          }
+        });
+        
+        this.mayCreateRegistry = !isClosed;
       }
     }
   };
