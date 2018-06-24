@@ -13,6 +13,9 @@ export default {
 };
 </script>
 <style>
+#app {
+  margin-bottom: 56px;
+}
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;

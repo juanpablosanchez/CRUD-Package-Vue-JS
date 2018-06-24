@@ -22,7 +22,7 @@
       <v-layout row wrap>
         <v-flex xs12>
           <div class="text-xs-center">
-            <v-btn color="teal white--text" @click="getPackagesCloseToLocation()">Crear</v-btn>
+            <v-btn color="teal white--text" :disabled="!isFloat(location.latitude) || !isFloat(location.longitude)" @click="getPackagesCloseToLocation()">Buscar</v-btn>
           </div>
         </v-flex>
       </v-layout>

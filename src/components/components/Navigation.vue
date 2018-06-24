@@ -1,5 +1,5 @@
 <template>
-  <v-bottom-nav :value="true" :active.sync="e2" :color="colors[e2]" absolute shift>
+  <v-bottom-nav :value="true" :active.sync="e2" :color="colors[e2]" :fixed="true" :height="56" shift>
     <v-btn class="white--text" dark @click="redirectTo('ListPackages')">
       <span>Paquetes</span>
       <v-icon>unarchive</v-icon>
