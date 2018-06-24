@@ -6,6 +6,8 @@ import EditPackage from '@/components/EditPackage'
 import ViewPackage from '@/components/ViewPackage'
 import CreateRegistry from '@/components/registry/CreateRegistry'
 import ViewRegistry from '@/components/registry/ViewRegistry'
+import ListRegistries from '@/components/registry/ListRegistries'
+import SearchByLocation from '@/components/SearchByLocation'
 
 Vue.use(Router)
 
@@ -39,9 +41,20 @@ export default new Router({
       component: CreateRegistry
     },
     {
-      path: '/package/:idpackage/registry/view/:id',
+      path: '/registries',
+      name: 'ListRegistries',
+      component: ListRegistries
+    },
+    {
+      path: '/registry/view/:id',
       name: 'ViewRegistry',
       component: ViewRegistry
+    },
+    // Search by location
+    {
+      path: '/searchbylocation',
+      name: 'SearchByLocation',
+      component: SearchByLocation
     },
     // Catch-all redirect
     {

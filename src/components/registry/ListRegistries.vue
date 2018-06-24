@@ -43,7 +43,7 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <bottom-navigation selected="0"></bottom-navigation>
+    <bottom-navigation selected="1"></bottom-navigation>
   </div>
 </template>
 <script>

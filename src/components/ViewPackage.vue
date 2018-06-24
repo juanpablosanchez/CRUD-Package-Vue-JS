@@ -5,6 +5,11 @@
         <v-icon color="black">chevron_left</v-icon>
       </v-btn>
       <v-toolbar-title>Detalles del paquete</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn small round color="amber" v-if="itemPackage._id" :to="{ name: 'EditPackage', params: { id: itemPackage._id }}">
+        Editar
+        <v-icon small>edit</v-icon>
+      </v-btn>
     </v-toolbar>
     <br>
     <v-container grid-list-md>
@@ -47,7 +52,7 @@
     <br>
     <v-subheader>
       Notificaciones
-      <v-btn small round color="teal white--text">
+      <v-btn small round color="teal white--text" v-if="itemPackage._id" :to="{ name: 'ViewRegistry', params: { idpackage: itemPackage._id }}">
         Crear
         <v-icon small color="white">add</v-icon>
       </v-btn>
@@ -57,12 +62,13 @@
         <td>{{ props.item.date | moment("ddd, DD MMM YYYY HH:mm") }}</td>
         <td class="text-xs-right">{{ props.item.state }}</td>
         <td class="justify-center layout px-0">
-          <v-btn icon class="mx-0" :to="{ name: 'ViewRegistry', params: { idpackage: itemPackage._id, id: props.item._id }}">
+          <v-btn icon class="mx-0" v-if="itemPackage._id && props.item._id" :to="{ name: 'ViewRegistry', params: { idpackage: itemPackage._id, id: props.item._id }}">
             <v-icon color="teal">visibility</v-icon>
           </v-btn>
         </td>
       </template>
     </v-data-table>
+    <bottom-navigation selected="0"></bottom-navigation>
   </div>
 </template>
 <script>

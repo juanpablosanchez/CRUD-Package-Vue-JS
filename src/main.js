@@ -11,11 +11,13 @@ import 'babel-polyfill'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
+import Navigation from './components/components/Navigation'
+
 Vue.use(VueAxios, axios);
 Vue.use(require('vue-moment'));
 Vue.use(Vuetify)
 Vue.mixin({
-  data: function() {
+  data: function () {
     return {
       get apiPath() {
         return 'https://my-nodejs-docker-application-bhxwhkprbr.now.sh/';
@@ -23,6 +25,8 @@ Vue.mixin({
     }
   }
 })
+
+Vue.component('bottom-navigation', Navigation)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
