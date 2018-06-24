@@ -9,7 +9,6 @@ import Vuetify from 'vuetify'
 
 import 'babel-polyfill'
 import 'vuetify/dist/vuetify.min.css'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 import Navigation from './components/components/Navigation'
 
